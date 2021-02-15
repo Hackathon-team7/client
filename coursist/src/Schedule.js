@@ -19,9 +19,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Calendar from 'react-calendar';
 import { mainListItems, secondaryListItems } from './listItems';
-import {BrowserRouter as Router, Switch, Route, Link, Redirect} from "react-router-dom"
-import Schedule from './Schedule';
-import Orders from './Orders';
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
 
 const drawerWidth = 240;
 
@@ -61,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   title: {
-    direction: 'rtl',
     flexGrow: 1,
   },
   drawerPaper: {
@@ -105,99 +102,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Schedule() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [value, onChange] = React.useState(new Date());
 
-  const routes = [
-    {
-      path: "/schedule",
-      main: () => <h2>לוח זמנים</h2>
-    },
-    {
-      path: "/messages",
-      main: () => <h2>הודעות</h2>
-    },
-  ];
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
   const handleDayClick = () => {
     window.alert("FUCK ME")
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
-    <Router>
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-          <Switch>
-            {routes.map((route, index) => (
-              // Render more <Route>s with the same paths as
-              // above, but different components this time.
-              <Route
-                key={index}
-                path={route.path}
-                exact={route.exact}
-                children={<route.main />}
-              />
-            ))}
-          </Switch>
-          </Typography>
-          <IconButton color="inherit">
-            <Badge color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-        <Switch>
-    
-        <Route path="/schedule">
-          <Schedule/>
-          </Route>
-          <Route path="/messages" component={Orders} />
-          </Switch>
-        </Container>
-      </main>
-    </div>
-    </Router>
+      <div>
+<Grid container spacing={3}>
+{/* Chart */}
+<Grid item xs={12} md={8} lg={9}>
+  <Paper className={fixedHeightPaper}>
+  <Calendar
+onChange={onChange}
+value={value}
+onClickDay={handleDayClick}
+/>
+  </Paper>
+</Grid>
+<Grid item xs={12}>
+  <Paper className={classes.paper}>
+{}
+  <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+בחר יום
+</Typography>
+  </Paper>
+</Grid>
+</Grid>
+<Box pt={4}>
+</Box>
+</div>
   );
 }
