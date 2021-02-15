@@ -1,0 +1,21 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "allowedRoles": [
+        "authenticated"
+      ]
+    },
+    {
+      "route": "/login",
+      "serve": "/.auth/login/aad"
+    }
+  ],
+  "platformErrorOverrides": [
+    {
+      "errorType": "Unauthenticated",
+      "statusCode": "302",
+      "serve": "/login"
+    }
+  ]
+}
