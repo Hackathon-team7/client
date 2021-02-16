@@ -2,14 +2,11 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
+import AllInBoxIcon from '@material-ui/icons/AllInbox';
+
+import {Link} from "react-router-dom"
 
 
 export const mainListItems = (
@@ -30,11 +27,26 @@ export const mainListItems = (
         <ListItemText primary="שלח הודעה" />
         </ListItem>
     </Link>
+    <Link to="/addForm">
+        <ListItem button>
+        <ListItemIcon>
+            <AllInBoxIcon />
+        </ListItemIcon>
+        <ListItemText primary="הוספת מסמך" />
+        </ListItem>
+    </Link>
   </div>
 );
 
 export const secondaryListItems = (
   <div>
-
+<Link to="/management">
+        <ListItem button>
+        <ListItemIcon>
+            <NotificationsIcon />
+        </ListItemIcon>
+        <ListItemText primary="מסך ניהול" />
+        </ListItem>
+    </Link>
   </div>
 );

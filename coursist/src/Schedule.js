@@ -1,29 +1,16 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
+import { withStyles  } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import Calendar from 'react-calendar';
-import { mainListItems, secondaryListItems } from './listItems';
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
+import InfiniteLoading from 'react-simple-infinite-loading';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const styles = theme => ({
   root: {
     display: 'flex',
   },
@@ -100,42 +87,74 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
-}));
+});
 
-export default function Schedule() {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-  const [value, onChange] = React.useState(new Date());
+class Schedule extends React.Component {
+  constructor(props) {
+    super(props);
+    // Don't call this.setState() here!
+    this.state = {userPicked: false, items: null, value: new Date()};
+  }
 
-  const handleDayClick = () => {
-    window.alert("FUCK ME")
+  handleDayClick = () => {
+    fetch('https://coursist-backend.azurewebsites.net/event')
+    .then(res => res.json())
+    .then(( results ) => {
+      console.log(results)
+      this.setState({userPicked : true, hasMore : false, items: results})
+    })
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  fetchMoreData = () => {
+    if (this.state.items.length >= 500) {
+      this.setState({ hasMore: false });
+      return;
+    }
+    // a fake async api call like which sends
+    // 20 more records in .5 secs
+    setTimeout(() => {
+      this.setState({
+        items: this.state.items.concat(Array.from({ length: 20 }))
+      });
+    }, 500);
+  };
 
-  return (
+  render() {
+    const { classes } = this.props;
+    var fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+return (
       <div>
 <Grid container spacing={3}>
 {/* Chart */}
 <Grid item xs={12} md={8} lg={9}>
   <Paper className={fixedHeightPaper}>
   <Calendar
-onChange={onChange}
-value={value}
-onClickDay={handleDayClick}
+onChange={this.onChange}
+value={this.state.value}
+onClickDay={this.handleDayClick}
 />
   </Paper>
 </Grid>
 <Grid item xs={12}>
   <Paper className={classes.paper}>
-{}
-  <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+{!this.state.userPicked ? 
+<Typography component="h1" direction="rtl" variant="h6" color="inherit" noWrap className={classes.title}>
 בחר יום
-</Typography>
+</Typography> :
+ <div style={{ width: 300, height: 300 }}>
+ <InfiniteLoading
+   hasMoreItems={this.statehasMore}
+   itemHeight={40}
+   loadMoreItems={this.state.fetchMore}
+ >
+ {this.state.items.map(item => <div key={item.id}>{item.name +":\n מתחיל ב: " + item.startDate + "נגמר ב: " + item.endDate}</div>)}
+ </InfiniteLoading>
+</div> }
   </Paper>
 </Grid>
 </Grid>
 <Box pt={4}>
 </Box>
 </div>
-  );
+)};
 }
+export default withStyles(styles, { withTheme: true })(Schedule);
